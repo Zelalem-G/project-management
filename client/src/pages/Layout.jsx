@@ -11,7 +11,7 @@ const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { loading } = useSelector((state) => state.workspace);
   const dispatch = useDispatch();
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
 
   // Initial load of theme
   useEffect(() => {
