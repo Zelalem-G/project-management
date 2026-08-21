@@ -4,11 +4,13 @@ import { Inngest } from "inngest";
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "project management" });
 
+// 1. User Creation
 const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-from-clerk", triggers: [{ event: "clerk/user.created" }] },
+  { id: "sync-user-from-clerk" },
+  { event: "clerk/user.created" },
   async ({ event }) => {
     const { data } = event;
-    await Prisma.user.create({
+    await prisma.user.create({
       data: {
         id: data.id,
         email: data?.email_addresses[0]?.email_address,
@@ -19,11 +21,13 @@ const syncUserCreation = inngest.createFunction(
   },
 );
 
+// 2. User Deletion
 const syncUserDeletion = inngest.createFunction(
-  { id: "delete-user-from-clerk", triggers: [{ event: "clerk/user.deleted" }] },
+  { id: "delete-user-from-clerk" },
+  { event: "clerk/user.deleted" },
   async ({ event }) => {
     const { data } = event;
-    await Prisma.user.delete({
+    await prisma.user.delete({
       where: {
         id: data.id,
       },
@@ -31,11 +35,13 @@ const syncUserDeletion = inngest.createFunction(
   },
 );
 
+// 3. User Update
 const syncUserUpdation = inngest.createFunction(
-  { id: "update-user-from-clerk", triggers: [{ event: "clerk/user.updated" }] },
+  { id: "update-user-from-clerk" },
+  { event: "clerk/user.updated" },
   async ({ event }) => {
     const { data } = event;
-    await Prisma.user.update({
+    await prisma.user.update({
       where: {
         id: data.id,
       },
@@ -48,7 +54,7 @@ const syncUserUpdation = inngest.createFunction(
   },
 );
 
-// Inngest Function to save workspace data to a database
+// 4. Workspace Creation
 const syncWorkspaceCreation = inngest.createFunction(
   { id: "sync-workspace-from-clerk" },
   { event: "clerk/organization.created" },
@@ -64,8 +70,8 @@ const syncWorkspaceCreation = inngest.createFunction(
       },
     });
 
-    // add creater as ADMIN member
-    await prisma.workspace.create({
+    // Add creator as ADMIN member
+    await prisma.workspaceMember.create({
       data: {
         userId: data.created_by,
         workspaceId: data.id,
@@ -75,7 +81,7 @@ const syncWorkspaceCreation = inngest.createFunction(
   },
 );
 
-// Inngest Function to update workspace data in database
+// 5. Workspace Update
 const syncWorkspaceUpdation = inngest.createFunction(
   { id: "update-workspace-from-clerk" },
   { event: "clerk/organization.updated" },
@@ -94,8 +100,7 @@ const syncWorkspaceUpdation = inngest.createFunction(
   },
 );
 
-// Inngest Function to delete workspace from database
-
+// 6. Workspace Deletion
 const syncWorkspaceDeletion = inngest.createFunction(
   { id: "delete-workspace-with-clerk" },
   { event: "clerk/organization.deleted" },
@@ -109,8 +114,7 @@ const syncWorkspaceDeletion = inngest.createFunction(
   },
 );
 
-// Inngest Function to save workspace member data to a database
-
+// 7. Workspace Member Creation
 const syncWorkspaceMemberCreation = inngest.createFunction(
   { id: "sync-workspace-member-from-clerk" },
   { event: "clerk/organizationInvitation.accepted" },
@@ -126,7 +130,7 @@ const syncWorkspaceMemberCreation = inngest.createFunction(
   },
 );
 
-// Create an empty array where we'll export future Inngest functions
+// Export all functions
 export const functions = [
   syncUserCreation,
   syncUserDeletion,
