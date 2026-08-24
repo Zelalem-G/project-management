@@ -24,7 +24,7 @@ const Layout = () => {
     if (isLoaded && user && workspaces.length === 0) {
       dispatch(fetchWorkspaces({ getToken }));
     }
-  }, [user, isLoaded]);
+  }, [isLoaded, user, workspaces]);
 
   if (!user) {
     return (
