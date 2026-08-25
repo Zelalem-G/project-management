@@ -192,7 +192,7 @@ export const addMember = async (req, res) => {
     const member = await prisma.projectMember.create({
       data: {
         userId: user.id,
-        projectId,
+        projectId, 
       },
     });
 
