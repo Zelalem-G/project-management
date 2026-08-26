@@ -15,7 +15,7 @@ const Layout = () => {
   const { user, isLoaded } = useUser();
   const { getToken } = useAuth();
 
-  // Initial load of theme
+  // Initial load of theme e
   useEffect(() => {
     dispatch(loadTheme());
   }, []);
